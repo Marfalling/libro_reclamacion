@@ -40,7 +40,7 @@
                         echo "Reclamo registrado exitosamente.";
 
                         // Comprobar si es menor de edad y registrar los datos del apoderado
-                        if ($menor_edad) {
+                        if ($menor_edad === 'Sí') {
                             // Obtener los datos del apoderado
                             $tipo_documento = $_REQUEST['tipo_documento'];
                             $num_documento = $_REQUEST['num_documento'];
