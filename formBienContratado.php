@@ -23,6 +23,7 @@
     ?>
 
     <form action="controlador/reclamo_registrar.php" method="post">
+    <input type="hidden" name="id_usuario" value="<?php echo $_GET['id']; ?>">
         <div class="card">
 
         

@@ -1,10 +1,11 @@
 <?php
-function RegistrarReclamo($tipo_bien, $monto_reclamado, $descripcion, $tipo_reclamo, $detalle_reclamo, $pedido, $menor_edad)
+function RegistrarReclamo($id_usuario, $tipo_bien, $monto_reclamado, $descripcion, $tipo_reclamo, $detalle_reclamo, $pedido, $menor_edad)
 {
     require("conexion.php");
     
-    $sql = "INSERT INTO reclamaciones (tipo_bien, monto_reclamado, descripcion, tipo_reclamo, detalle_reclamo, pedido, menor_edad) 
-            VALUES ('$tipo_bien', '$monto_reclamado', '$descripcion', '$tipo_reclamo', '$detalle_reclamo', '$pedido', '$menor_edad')";
+    // Incluimos `id_usuario` en la consulta SQL
+    $sql = "INSERT INTO reclamaciones (id_usuario, tipo_bien, monto_reclamado, descripcion, tipo_reclamo, detalle_reclamo, pedido, menor_edad) 
+            VALUES ('$id_usuario', '$tipo_bien', '$monto_reclamado', '$descripcion', '$tipo_reclamo', '$detalle_reclamo', '$pedido', '$menor_edad')";
     
     $res = mysqli_query($con, $sql);
     if (!$res) {
@@ -14,5 +15,4 @@ function RegistrarReclamo($tipo_bien, $monto_reclamado, $descripcion, $tipo_recl
     mysqli_close($con);
     return "Registro exitoso"; 
 }
-
 ?>

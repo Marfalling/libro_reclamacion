@@ -18,11 +18,11 @@
                 <main>
                 <?php
 
-                    
                 require("../modelo/m_reclamaciones.php");
-                
                 if (isset($_REQUEST['registrar'])) 
                 {
+                    // Obtener el id_usuario desde la URL
+                    $id_usuario = $_REQUEST['id_usuario'];
 
                     $tipo_bien = $_REQUEST['tipo_bien'];
                     $monto_reclamado = $_REQUEST['monto_reclamado'];
@@ -31,11 +31,10 @@
                     $detalle_reclamo = $_REQUEST['detalle_reclamo'];
                     $pedido = $_REQUEST['pedido'];
                     $menor_edad = isset($_REQUEST['menor_edad']) ? 1 : 0; // 1 si está marcado, 0 si no lo está
-                
-                
-                    // Ahora puedo llamar a la función RegistrarReclamo
-                    $rpta = RegistrarReclamo($tipo_bien, $monto_reclamado, $descripcion, $tipo_reclamo, $detalle_reclamo, $pedido, $menor_edad);
-                
+
+                    // Llamar a la función RegistrarReclamo con id_usuario
+                    $rpta = RegistrarReclamo($id_usuario, $tipo_bien, $monto_reclamado, $descripcion, $tipo_reclamo, $detalle_reclamo, $pedido, $menor_edad);
+
                     echo $rpta; // Muestra el mensaje de éxito o error
                 }
                 
