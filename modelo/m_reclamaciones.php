@@ -1,18 +1,22 @@
 <?php
-function RegistrarReclamo($id_usuario, $tipo_bien, $monto_reclamado, $descripcion, $tipo_reclamo, $detalle_reclamo, $pedido, $menor_edad)
-{
+function RegistrarReclamo($id_usuario, $tipo_bien, $monto_reclamado, $descripcion, $tipo_reclamo, $detalle_reclamo, $pedido, $menor_edad) {
     require("conexion.php");
-    
-    // Incluimos `id_usuario` en la consulta SQL
+
     $sql = "INSERT INTO reclamaciones (id_usuario, tipo_bien, monto_reclamado, descripcion, tipo_reclamo, detalle_reclamo, pedido, menor_edad) 
             VALUES ('$id_usuario', '$tipo_bien', '$monto_reclamado', '$descripcion', '$tipo_reclamo', '$detalle_reclamo', '$pedido', '$menor_edad')";
     
     $res = mysqli_query($con, $sql);
-    if (!$res) {
+
+    // Obtiene id de la reclamacion recién creada
+    $id_reclamacion = mysqli_insert_id($con);
+
+    mysqli_close($con);
+
+    if ($res) {
+        return $id_reclamacion; // Retorna el ID de la reclamación
+    } else {
         return "Error: " . mysqli_error($con);
     }
-    
-    mysqli_close($con);
-    return "Registro exitoso"; 
 }
+
 ?>

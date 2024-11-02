@@ -1,18 +1,27 @@
 <?php
-function RegistrarApoderado($id_reclamacion,$tipo_documento,$num_documento, $nom, $ape_paterno, $ape_materno, $cel,$email)
+function RegistrarApoderado($id_reclamacion, $tipo_documento, $num_documento, $nom, $ape_paterno, $ape_materno, $telefono, $email)
 {
     require("conexion.php");
-    //los parentesis son para que se recepcione todo lo que lleva cada campo
-    $sql="INSERT INTO apoderado() VALUES(NULL,'$tipo_documento','$num_documento', '$nom', '$ape_paterno', '$ape_materno','$cel','$email')";
-    //se le coloca null, porque el id es incremental, luego se coloca cada valor segun el orden de la base de datos para que inserte en los datos correctos
-    //se hace la inserción de los datos
+
+    // Actualiza la consulta SQL para incluir el id_reclamacion
+    $sql = "INSERT INTO apoderado (id_reclamacion, tipo_documento, numero_documento, nombre, ape_paterno, ape_materno, telefono, email) 
+            VALUES ('$id_reclamacion', '$tipo_documento', '$num_documento', '$nom', '$ape_paterno', '$ape_materno', '$telefono', '$email')";
+
+    // Ejecutar la consulta
     $res = mysqli_query($con, $sql);
 
-    //podemos colocar un retorno 
-    return "SI";
+    // Guardar el resultado de error antes de cerrar la conexión
+    if ($res) {
+        // Si la inserción fue exitosa, puedes devolver un mensaje o realizar otra acción
+        $resultado = "Registro de apoderado exitoso";
+    } else {
+        // En caso de error, puedes devolver el mensaje de error
+        $resultado = "Error: " . mysqli_error($con);
+    }
 
-    //con esto se cierra la conexion
+    // Cierra la conexión después de realizar la consulta
     mysqli_close($con);
 
+    return $resultado; // Devuelve el resultado
 }
 ?>

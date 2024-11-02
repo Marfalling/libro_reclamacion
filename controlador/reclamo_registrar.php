@@ -17,30 +17,48 @@
             <div id="layoutSidenav_content">
                 <main>
                 <?php
-
                 require("../modelo/m_reclamaciones.php");
-                if (isset($_REQUEST['registrar'])) 
-                {
-                    // Obtener el id_usuario desde la URL
-                    $id_usuario = $_REQUEST['id_usuario'];
+                require("../modelo/m_apoderado.php");
 
+                if (isset($_REQUEST['registrar'])) {
+                    // Obtener el id_usuario desde la URL 
+                    $id_usuario = $_REQUEST['id_usuario'];
+                    
+                    // Datos del reclamo
                     $tipo_bien = $_REQUEST['tipo_bien'];
                     $monto_reclamado = $_REQUEST['monto_reclamado'];
                     $descripcion = $_REQUEST['descripcion'];
                     $tipo_reclamo = $_REQUEST['tipo_reclamo'];
                     $detalle_reclamo = $_REQUEST['detalle_reclamo'];
                     $pedido = $_REQUEST['pedido'];
-                    $menor_edad = isset($_REQUEST['menor_edad']) ? 1 : 0; // 1 si está marcado, 0 si no lo está
+                    $menor_edad = isset($_REQUEST['menor_edad']) ? 'Sí' : 'No';
 
-                    // Llamar a la función RegistrarReclamo con id_usuario
-                    $rpta = RegistrarReclamo($id_usuario, $tipo_bien, $monto_reclamado, $descripcion, $tipo_reclamo, $detalle_reclamo, $pedido, $menor_edad);
+                    // Registrar el reclamo
+                    $id_reclamacion = RegistrarReclamo($id_usuario, $tipo_bien, $monto_reclamado, $descripcion, $tipo_reclamo, $detalle_reclamo, $pedido, $menor_edad);
 
-                    echo $rpta; // Muestra el mensaje de éxito o error
+                    if ($id_reclamacion) {
+                        echo "Reclamo registrado exitosamente.";
+
+                        // Comprobar si es menor de edad y registrar los datos del apoderado
+                        if ($menor_edad) {
+                            // Obtener los datos del apoderado
+                            $tipo_documento = $_REQUEST['tipo_documento'];
+                            $num_documento = $_REQUEST['num_documento'];
+                            $nombre_apoderado = $_REQUEST['nom'];
+                            $apellido_paterno = $_REQUEST['ape_paterno'];
+                            $apellido_materno = $_REQUEST['ape_materno'];
+                            $telefono = $_REQUEST['cel'];
+                            $email = $_REQUEST['email'];
+
+                            // Registrar los datos del apoderado
+                            RegistrarApoderado($id_reclamacion, $tipo_documento, $num_documento, $nombre_apoderado, $apellido_paterno, $apellido_materno, $telefono, $email);
+                        }
+                    } else {
+                        echo "Error al registrar el reclamo.";
+                    }
                 }
-                
-                
 
-
+                
                 require("../index.php");
                 ?>          
                 </main>

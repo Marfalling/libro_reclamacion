@@ -6,15 +6,17 @@
     <title>Libro de Reclamaciones</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
     <script>
-        // Función para mostrar/ocultar el formulario del apoderado
         function siEsMenor() {
-            const checkbox = document.getElementById('gridCheck');
-            const apoderadoForm = document.getElementById('apoderadoForm');
-            
-            // Muestra el formulario si el checkbox está marcado
-            apoderadoForm.style.display = checkbox.checked ? 'block' : 'none';
+            var checkBox = document.getElementById("gridCheck");
+            var apoderadoForm = document.getElementById("apoderadoForm");
+            if (checkBox.checked) {
+                apoderadoForm.style.display = "block";
+            } else {
+                apoderadoForm.style.display = "none";
+            }
         }
     </script>
+
 </head>
 <body>
 <div class="container mt-5">
