@@ -62,7 +62,7 @@
 
                     <div class="form-group mb-3">
                         <label>Dirección de Domicilio</label>
-                        <input type="text" name="dir" class="form-control" placeholder="Direccióon Domicilio" aria-label="Dirección Domicilio" required>
+                        <input type="text" name="dir" class="form-control" placeholder="Dirección Domicilio" aria-label="Dirección Domicilio" required>
                     </div>
 
                     <div class="form-group mb-3">
