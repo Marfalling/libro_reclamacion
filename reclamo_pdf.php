@@ -24,6 +24,7 @@ if (!$con) {
             reclamaciones.descripcion,
             reclamaciones.tipo_reclamo,
             reclamaciones.detalle_reclamo,
+            reclamaciones.fecha_reclamo,
             reclamaciones.pedido,
             reclamaciones.menor_edad,
             apoderado.nombre AS nombre_apoderado
@@ -34,7 +35,7 @@ if (!$con) {
         LEFT JOIN 
             apoderado ON reclamaciones.id_reclamacion = apoderado.id_reclamacion
         WHERE 
-            usuario.id_usuario = 78"; // Cambia el ID según sea necesario
+            usuario.id_usuario = $id_usuario"; // Cambia el ID según sea necesario
 
 
 $result = mysqli_query($con, $query);
@@ -66,6 +67,7 @@ if ($row = mysqli_fetch_assoc($result)) {
     $detalle_reclamo = $row['detalle_reclamo'];
     $pedido = $row['pedido'];
     $menor_edad = $row['menor_edad'];
+    $fecha = $row['fecha_reclamo'];
 
     //apoderado
 
@@ -90,8 +92,15 @@ class PDF extends FPDF
     }
 
     // Contenido de la tabla
-    function TablaLibroDeReclamaciones($nom, $tipo_documento, $n_documento, $ape_paterno, $ape_materno, $dir, $cel, $email, $id_reclamo, $tipo_bien, $monto,$descripcion,$tipo_reclamo, $detalle_reclamo, $pedido, $nombre_apoderado, $menor_edad)
+    function TablaLibroDeReclamaciones($nom, $tipo_documento, $n_documento, $ape_paterno, $ape_materno, $dir, $cel, $email, $id_reclamo, $tipo_bien, $monto,$descripcion,$tipo_reclamo, $detalle_reclamo, $pedido, $nombre_apoderado, $menor_edad, $fecha)
     {
+        if (strtotime($fecha)) { // Verifica si la fecha es válida
+            list($ano, $mes, $dia) = explode('-', $fecha);
+        } else {
+            // En caso de que la fecha no sea válida, asigna valores por defecto o muestra un mensaje de error
+            $ano = $mes = $dia = 'N/A';
+        }
+
         // Configuración del estilo
         $this->SetFont('Arial', 'B', 10);
 
@@ -101,9 +110,10 @@ class PDF extends FPDF
 
         // Segunda fila: Fecha
         $this->Cell(25, 10, 'FECHA:', 1, 0, 'C');                  // Etiqueta de Fecha
-        $this->Cell(35, 10, utf8_decode ('DÍA'), 1, 0, 'C');                     // Celda para el día
-        $this->Cell(25, 10, 'MES', 1, 0, 'C');                     // Celda para el mes
-        $this->Cell(35, 10,  utf8_decode ('AÑO'), 1, 0, 'C');                     // Celda para el año
+        $this->Cell(35, 10, utf8_decode ('').utf8_decode($dia), 1, 0, 'C');                     // Celda para el día
+        $this->Cell(25, 10, ''.utf8_decode($mes), 1, 0, 'C');                     // Celda para el mes
+        $this->Cell(35, 10,  utf8_decode ('').utf8_decode($ano), 1, 0, 'C');                     // Celda para el año
+
         
         // Alinear la celda de N° a la misma altura que HOJA DE RECLAMACION
         $this->Cell(70, 10, utf8_decode ('N° ').utf8_decode($id_reclamo), 1, 1, 'C');   // Cuadro para el número de reclamación
@@ -195,7 +205,7 @@ class PDF extends FPDF
 $pdf = new PDF();
 $pdf->AliasNbPages();
 $pdf->AddPage();
-$pdf->TablaLibroDeReclamaciones($nom, $tipo_documento, $n_documento, $ape_paterno, $ape_materno, $dir, $cel, $email, $id_reclamo, $tipo_bien, $monto,$descripcion,$tipo_reclamo, $detalle_reclamo, $pedido, $nombre_apoderado, $menor_edad);
+$pdf->TablaLibroDeReclamaciones($nom, $tipo_documento, $n_documento, $ape_paterno, $ape_materno, $dir, $cel, $email, $id_reclamo, $tipo_bien, $monto,$descripcion,$tipo_reclamo, $detalle_reclamo, $pedido, $nombre_apoderado, $menor_edad, $fecha);
 $pdf->Output();
 // Cerrar la conexión
 mysqli_close($con);

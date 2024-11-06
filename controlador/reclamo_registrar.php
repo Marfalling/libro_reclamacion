@@ -21,6 +21,9 @@
                 require("../modelo/m_apoderado.php");
 
                 if (isset($_REQUEST['registrar'])) {
+
+                    $fecha_reclamo = date('Y-m-d'); // Solo día, mes y año
+
                     // Obtener el id_usuario desde la URL 
                     $id_usuario = $_REQUEST['id_usuario'];
                     
@@ -34,7 +37,7 @@
                     $menor_edad = isset($_REQUEST['menor_edad']) ? 'Sí' : 'No';
 
                     // Registrar el reclamo
-                    $id_reclamacion = RegistrarReclamo($id_usuario, $tipo_bien, $monto_reclamado, $descripcion, $tipo_reclamo, $detalle_reclamo, $pedido, $menor_edad);
+                    $id_reclamacion = RegistrarReclamo($id_usuario, $tipo_bien, $monto_reclamado, $descripcion, $tipo_reclamo, $detalle_reclamo, $pedido, $menor_edad, $fecha_reclamo);
 
                     if ($id_reclamacion) {
                         echo "Reclamo registrado exitosamente.";
