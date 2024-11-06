@@ -4,11 +4,15 @@ require('fpdf/fpdf.php');
 // Conexión a la base de datos
 $con = mysqli_connect("localhost", "root", "", "libro_reclamaciones", "3307");
 
+
+
 // Verificar conexión
 if (!$con) {
     die("Error de conexión: " . mysqli_connect_error());
 }
-
+        // Obtener el id_usuario desde la URL, por ejemplo
+        $id_usuario = isset($_GET['id_usuario']) ? $_GET['id_usuario'] : die("ID de usuario no especificado");
+        
         $query = "SELECT 
             usuario.nombre, 
             usuario.tipo_documento, 
@@ -35,7 +39,7 @@ if (!$con) {
         LEFT JOIN 
             apoderado ON reclamaciones.id_reclamacion = apoderado.id_reclamacion
         WHERE 
-            usuario.id_usuario = $id_usuario"; // Cambia el ID según sea necesario
+            usuario.id_usuario = $id_usuario"; // Usamos id_usuario aquí
 
 
 $result = mysqli_query($con, $query);
