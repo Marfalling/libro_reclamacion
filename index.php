@@ -76,7 +76,7 @@
                     </div>
 
                     <div class="d-flex justify-content-end">
-                    <button type="submit" class="btn btn-primary" name="registrar">Siguiente</button>
+                    <button type="submit" class="btn btn-outline-dark btn-lg" name="registrar">Siguiente</button>
 
                     </div>
 

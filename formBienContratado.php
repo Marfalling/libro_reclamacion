@@ -172,7 +172,7 @@
                     </div>
 
                     <div class="text-center m-2 ">
-                        <button type="submit" name="registrar" class="btn btn-primary">Enviar</button>
+                        <button type="submit" name="registrar" class="btn btn-outline-dark btn-lg">Enviar</button>
                     </div>
     </form>   
         
