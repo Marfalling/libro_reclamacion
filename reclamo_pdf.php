@@ -202,7 +202,6 @@ class PDF extends FPDF
         $this->Ln(); 
 
 
-// Puedes ajustar los valores según sea necesario para obtener la alineación y el diseño que desees.
 
     }
 
@@ -215,12 +214,7 @@ class PDF extends FPDF
         // Establecer la posición en Y a la altura total de la página menos el margen inferior
         $this->SetY(-($this->bMargin + 10)); // 15 es la distancia desde el borde inferior que deseas para la imagen
         
-        // Posiciona la imagen en el pie de página.
-        // El primer parámetro es la ruta de la imagen.
-        // El segundo parámetro es la posición X (a 150 mm desde la izquierda, ajusta a tu necesidad).
-        // El tercer parámetro es la posición Y (a 15 mm desde la parte inferior de la página).
-        // El cuarto parámetro es el tamaño de la imagen (en mm, en este caso 50 mm de ancho).
-        $this->Image('icon/indecopi.jpg', 100, $this->GetY(), 100); // Cambié el valor de X a 150 mm y tamaño de la imagen a 50 mm
+        $this->Image('icon/indecopi.jpg', 100, $this->GetY(), 100); // Cambié el valor de X a 100 mm y tamaño de la imagen a 50 mm
         
         
     }
