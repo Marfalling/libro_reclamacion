@@ -168,13 +168,20 @@ class PDF extends FPDF
         // Celda ancha para "DETALLE:"
         $this->Cell(0, 30, 'DETALLE: '. utf8_decode($detalle_reclamo), 1, 1, 'L'); // Celda ancha para "DETALLE:"
         
-        // Celda ancha para "PEDIDO:"
-        $this->Cell(125, 30, 'PEDIDO: '. utf8_decode($pedido), 1, 0, 'L'); // Celda ancha para "PEDIDO:"
+            
+        // Fila para la firma del proveedor y cuadro vacío
+        $this->Cell(125, 30, 'PEDIDO: '. utf8_decode($pedido), 1, 0, 'L'); // Cuadro vacío a la izquierda
+        // Coloca el texto "FIRMA DEL CONSUMIDOR" centrado
+        $this->Cell(0, 10, 'FIRMA DEL CONSUMIDOR', 1, 0, 'C'); 
 
-        // Coloca un margen a la derecha para "FIRMA DEL CONSUMIDOR"
-        $this->Cell(0,30,'FIRMA DEL CONSUMIDOR',1,1,'C');
- 
-        $this->SetFont('Arial', 'B', 8); // Restablece el tamaño de la fuente
+        // Celda vacía para la firma, alineada a la misma altura
+        $this->Cell(0, 30, '', 1, 1, 'C'); // Celda vacía para la firma
+
+
+
+        // Restablece el tamaño de la fuente
+        $this->SetFont('Arial', 'B', 8);
+
         // TÍTULO: 4. OBSERVACIONES Y ACCIONES ADOPTADAS POR EL PROVEEDOR
         $this->Cell(0, 8, '4. OBSERVACIONES Y ACCIONES ADOPTADAS POR EL PROVEEDOR', 1, 0, 'L'); // Título
         $this->Ln();
@@ -189,8 +196,11 @@ class PDF extends FPDF
         $this->Ln(); // Salto de línea después de la fila de fecha
 
         // Fila para la firma del proveedor y cuadro vacío
-        $this->Cell(125, 30, '', 1, 0, 'C'); // Cuadro vacío a la izquierda
-        $this->Cell(0, 30, '', 1, 1, 'C'); // Celda de FIRMA
+        $this->Cell(125, 20, '', 1, 0, 'C'); // Cuadro vacío a la izquierda
+        $this->Cell(0, 20, '', 1, 1, 'C'); // Celda de FIRMA
+
+        $this->Ln(); 
+
 
 // Puedes ajustar los valores según sea necesario para obtener la alineación y el diseño que desees.
 
@@ -203,7 +213,7 @@ class PDF extends FPDF
         $this->MultiCell(0, 5,utf8_decode( '* La formulación del reclamo no impide acudir a otras vías de solución de controversias ni es requisito previo para interponer una denuncia ante el INDECOPI.' . "\n" .
                         '* El proveedor debe dar respuesta al reclamo o queja en un plazo no mayor a quince (15) días hábiles, el cual es improrrogable.'), 0, 'L');
         // Establecer la posición en Y a la altura total de la página menos el margen inferior
-        $this->SetY(-($this->bMargin + 15)); // 15 es la distancia desde el borde inferior que deseas para la imagen
+        $this->SetY(-($this->bMargin + 10)); // 15 es la distancia desde el borde inferior que deseas para la imagen
         
         // Posiciona la imagen en el pie de página.
         // El primer parámetro es la ruta de la imagen.
