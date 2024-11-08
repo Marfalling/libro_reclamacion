@@ -168,15 +168,13 @@ class PDF extends FPDF
         // Celda ancha para "DETALLE:"
         $this->Cell(0, 30, 'DETALLE: '. utf8_decode($detalle_reclamo), 1, 1, 'L'); // Celda ancha para "DETALLE:"
         
-            
-        // Fila para la firma del proveedor y cuadro vacío
-        $this->Cell(125, 30, 'PEDIDO: '. utf8_decode($pedido), 1, 0, 'L'); // Cuadro vacío a la izquierda
-        // Coloca el texto "FIRMA DEL CONSUMIDOR" centrado
-        $this->Cell(0, 10, 'FIRMA DEL CONSUMIDOR', 1, 0, 'C'); 
+       // Fila para la firma del proveedor y cuadro vacío
+       $this->Cell(125, 30, 'PEDIDO: '. utf8_decode($pedido), 1, 0, 'L'); // Cuadro vacío a la izquierda
+       // Coloca el texto "FIRMA DEL CONSUMIDOR" centrado
+       $this->Cell(0, 10, 'FIRMA DEL CONSUMIDOR', 1, 0, 'C'); 
 
-        // Celda vacía para la firma, alineada a la misma altura
-        $this->Cell(0, 30, '', 1, 1, 'C'); // Celda vacía para la firma
-
+       // Celda vacía para la firma, alineada a la misma altura
+       $this->Cell(0, 30, '', 1, 1, 'C'); // Celda vacía para la firma
 
 
         // Restablece el tamaño de la fuente
@@ -197,11 +195,12 @@ class PDF extends FPDF
 
         // Fila para la firma del proveedor y cuadro vacío
         $this->Cell(125, 20, '', 1, 0, 'C'); // Cuadro vacío a la izquierda
-        $this->Cell(0, 20, '', 1, 1, 'C'); // Celda de FIRMA
+        $this->Cell(0, 20, '', 1, 1, 'C'); // Celda de FIRMA 
 
-        $this->Ln(); 
-
-
+        $this->Cell(100,12, 'Reclamo: Disconformidad relacionada a los productos o servicios.', 1, 0, 'L');        
+        $this->MultiCell(0,4, utf8_decode("Queja: Disconformidad no relacionada a los productos o servicios; o, \nmalestar o descontento respecto a la atención al publico."), 1, 'L');
+        $this->Ln();
+        
 
     }
 
