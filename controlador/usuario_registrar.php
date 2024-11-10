@@ -45,7 +45,7 @@
                             echo "<p>Error al registrar el usuario. Intente nuevamente.</p>";
                         }
                     }
-
+                    
                 require("../index.php");
                 ?>          
                 </main>

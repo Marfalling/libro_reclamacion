@@ -140,7 +140,7 @@ class PDF extends FPDF
         $this->Cell(75, 10, 'DNI: / CE: ' .  mb_convert_encoding($tipo_documento, 'ISO-8859-1', 'UTF-8') . ' : ' . mb_convert_encoding($n_documento, 'ISO-8859-1', 'UTF-8'), 1, 0, 'L');
         $this->Cell(0, 10, mb_convert_encoding ('TÉLEFONO / EMAIL: ', 'ISO-8859-1', 'UTF-8'). mb_convert_encoding($cel, 'ISO-8859-1', 'UTF-8') . ' / ' . mb_convert_encoding($email, 'ISO-8859-1', 'UTF-8'), 1, 0, 'L');                  // Etiqueta de TELEFONO Y EMAIL
         $this->Ln(); // Salta a la siguiente línea
-        $this->Cell(0, 8, 'PADRE O MADRE: [PARA EL CASO DE MENORES DE EDAD]'. mb_convert_encoding($menor_edad, 'ISO-8859-1', 'UTF-8'), 1, 1);
+        $this->Cell(0, 8, 'PADRE O MADRE: '. mb_convert_encoding($menor_edad, 'ISO-8859-1', 'UTF-8') . ' es menor de edad. ' . ' ' . mb_convert_encoding($nombre_apoderado, 'ISO-8859-1', 'UTF-8'), 1, 1);
         
 
         $this->SetFont('Arial', 'B', 8); // Restablece el tamaño de la fuente a 12, si es necesario para el siguiente contenido
