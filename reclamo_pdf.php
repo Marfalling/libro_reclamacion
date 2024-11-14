@@ -31,6 +31,7 @@ if (!$con) {
             reclamaciones.fecha_reclamo,
             reclamaciones.pedido,
             reclamaciones.menor_edad,
+            reclamaciones.fecha_respuesta,
             apoderado.nombre AS nombre_apoderado
         FROM 
             usuario
@@ -72,6 +73,7 @@ if ($row = mysqli_fetch_assoc($result)) {
     $pedido = $row['pedido'];
     $menor_edad = $row['menor_edad'];
     $fecha = $row['fecha_reclamo'];
+    $fecha_respuesta = $row['fecha_respuesta'];
 
     //apoderado
 
@@ -96,7 +98,7 @@ class PDF extends FPDF
     }
 
     // Contenido de la tabla
-    function TablaLibroDeReclamaciones($nom, $tipo_documento, $n_documento, $ape_paterno, $ape_materno, $dir, $cel, $email, $id_reclamo, $tipo_bien, $monto,$descripcion,$tipo_reclamo, $detalle_reclamo, $pedido, $nombre_apoderado, $menor_edad, $fecha)
+    function TablaLibroDeReclamaciones($nom, $tipo_documento, $n_documento, $ape_paterno, $ape_materno, $dir, $cel, $email, $id_reclamo, $tipo_bien, $monto,$descripcion,$tipo_reclamo, $detalle_reclamo, $pedido, $nombre_apoderado, $menor_edad, $fecha, $fecha_respuesta)
     {
         if (strtotime($fecha)) { // Verifica si la fecha es válida
             list($ano, $mes, $dia) = explode('-', $fecha);
@@ -191,9 +193,19 @@ class PDF extends FPDF
         
         // Segunda fila: Fecha
         $this->Cell(80, 10, 'FECHA DE COMUNICACION DE LA RESPUESTA:', 1, 0, 'C'); // Etiqueta de Fecha
-        $this->Cell(15, 10, mb_convert_encoding('DÍA', 'ISO-8859-1', 'UTF-8'), 1, 0, 'C'); // Celda para el día
-        $this->Cell(15, 10, 'MES', 1, 0, 'C'); // Celda para el mes
-        $this->Cell(15, 10, mb_convert_encoding('AÑO', 'ISO-8859-1', 'UTF-8'), 1, 0, 'C');
+
+        $fecha= new DateTime(); // Fecha actual
+        $fecha->modify('+15 days');
+        $fecha_respuesta = $fecha->format('Y-m-d'); // Formato de la fecha de respuesta
+
+        // Variables para día, mes y año 
+        $day = $fecha->format('d'); // Día de la fecha de respuesta
+        $month = $fecha->format('m'); // Mes de la fecha de respuesta
+        $anio = $fecha->format('Y'); // Año de la fecha de respuesta
+
+        $this->Cell(15, 10, mb_convert_encoding($day, 'ISO-8859-1', 'UTF-8'), 1, 0, 'C'); // Celda para el día
+        $this->Cell(15, 10, mb_convert_encoding($month, 'ISO-8859-1', 'UTF-8'), 1, 0, 'C'); //Celda para el mes
+        $this->Cell(15, 10, mb_convert_encoding($anio, 'ISO-8859-1', 'UTF-8'), 1, 0, 'C'); //Celda para el año
         $this->Cell(0, 10, mb_convert_encoding('FIRMA DEL PROVEEDOR', 'ISO-8859-1', 'UTF-8'), 1, 0, 'C');
 
         $this->Ln(); // Salto de línea después de la fila de fecha
@@ -232,7 +244,7 @@ class PDF extends FPDF
 $pdf = new PDF();
 $pdf->AliasNbPages();
 $pdf->AddPage();
-$pdf->TablaLibroDeReclamaciones($nom, $tipo_documento, $n_documento, $ape_paterno, $ape_materno, $dir, $cel, $email, $id_reclamo, $tipo_bien, $monto,$descripcion,$tipo_reclamo, $detalle_reclamo, $pedido, $nombre_apoderado, $menor_edad, $fecha);
+$pdf->TablaLibroDeReclamaciones($nom, $tipo_documento, $n_documento, $ape_paterno, $ape_materno, $dir, $cel, $email, $id_reclamo, $tipo_bien, $monto,$descripcion,$tipo_reclamo, $detalle_reclamo, $pedido, $nombre_apoderado, $menor_edad, $fecha, $fecha_respuesta);
 $pdf->Output();
 // Cerrar la conexión
 mysqli_close($con);

@@ -20,9 +20,19 @@
                 require("../modelo/m_reclamaciones.php");
                 require("../modelo/m_apoderado.php");
 
+                // Función para calcular la fecha de respuesta sumando 15 días a la fecha de reclamo
+                function calcularFechaRespuesta($fecha_reclamo, $dias = 15) {
+                    $fecha = new DateTime($fecha_reclamo);
+                    $fecha->modify("+$dias days");
+                    return $fecha->format('Y-m-d');
+                }
+
                 if (isset($_REQUEST['registrar'])) {
 
                     $fecha_reclamo = date('Y-m-d'); // Solo día, mes y año
+
+                    // Calcular la fecha de respuesta
+                    $fecha_respuesta = calcularFechaRespuesta($fecha_reclamo);
 
                     // Obtener el id_usuario desde la URL 
                     $id_usuario = $_REQUEST['id_usuario'];
@@ -37,7 +47,7 @@
                     $menor_edad = isset($_REQUEST['menor_edad']) ? 'Sí' : 'No';
 
                     // Registrar el reclamo
-                    $id_reclamacion = RegistrarReclamo($id_usuario, $tipo_bien, $monto_reclamado, $descripcion, $tipo_reclamo, $detalle_reclamo, $pedido, $menor_edad, $fecha_reclamo);
+                    $id_reclamacion = RegistrarReclamo($id_usuario, $tipo_bien, $monto_reclamado, $descripcion, $tipo_reclamo, $detalle_reclamo, $pedido, $menor_edad, $fecha_reclamo, $fecha_respuesta);
 
                     if ($id_reclamacion) {
                         echo "Reclamo registrado exitosamente.";
