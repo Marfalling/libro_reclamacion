@@ -28,7 +28,7 @@
                         if (mysqli_num_rows($result) > 0) {
                             echo "<table class='table table-bordered table-striped'>";
                             echo "<thead class='thead-dark'>";
-                            echo "<tr><th>ID Reclamo</th><th>Nombre Usuario</th><th>Fecha Reclamo</th><th>Estado</th><th>Respuesta</th><th>Fecha Respuesta</th><th>Ver PDF</th><th>Responder</th></tr>";
+                            echo "<tr><th>ID Reclamo</th><th>ID Usuario</th><th>Fecha Reclamo</th><th>Estado</th><th>Respuesta</th><th>Fecha Respuesta</th><th>Ver PDF</th><th>Responder</th></tr>";
                             echo "</thead><tbody>";
                             
                             // Mostrar los datos
