@@ -39,8 +39,9 @@
                         if ($rpta) 
                         {
                             // Redirigir con el id del usuario recién creado
-                            header("Location: ../formBienContratado.php?id=".$rpta);
-                            exit(); 
+                           // header("Location: ../formBienContratado.php?id=".$rpta);
+                           echo "<script type='text/javascript'>window.location.href = '../formBienContratado.php?id=" . $rpta . "';</script>";
+
                         } else {
                             echo "<p>Error al registrar el usuario. Intente nuevamente.</p>";
                         }

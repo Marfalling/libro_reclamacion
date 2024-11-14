@@ -57,8 +57,9 @@
                             RegistrarApoderado($id_reclamacion, $tipo_documento, $num_documento, $nombre_apoderado, $apellido_paterno, $apellido_materno, $telefono, $email);
                         }
                         // Redirigir a la vista de PDF (reclamo_pdf.php) después de un registro exitoso
-                        header("Location: /libro_reclamo/reclamo_pdf.php?id_usuario=" . $id_usuario);
-                        exit(); // Importante para detener la ejecución posterior del código
+                        //header("Location: /libro_reclamo/reclamo_pdf.php?id_usuario=" . $id_usuario);
+                        echo "<script type='text/javascript'>window.location.href = '../reclamo_pdf.php?id_usuario=" . $id_usuario . "';</script>";
+
                     } else {
                         echo "Error al registrar el reclamo.";
                     }
