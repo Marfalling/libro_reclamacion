@@ -8,6 +8,11 @@
 </head>
 
 <body>
+
+    <?php
+        require("../MenuV.php"); // Sidebar fijo
+    ?>
+
     <div class="container mt-4">
         <div class="card shadow-lg text-center mb-4">
             <div class="card-header">
@@ -15,7 +20,7 @@
             </div>
             <div class="card-body">
                 <?php
-                    // Incluye la conexión a la base de datos
+                    // conexión a la base de datos
                     include('../modelo/conexion.php');
 
                     // Consulta para obtener los reclamos
