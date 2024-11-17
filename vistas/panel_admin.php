@@ -1,3 +1,17 @@
+<?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+// Verifica si el usuario está autenticado
+if (!isset($_SESSION['autentificado']) || $_SESSION['autentificado'] !== TRUE) {
+    // Si no está autenticado, redirige al login
+    header('Location: login.php');
+    exit();
+}
+?>
+
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -45,7 +59,7 @@
                                 echo "<td>" . $row['estado'] . "</td>";
                                 echo "<td>" . ($row['respuesta'] ? $row['respuesta'] : 'Sin respuesta') . "</td>"; // Muestra respuesta si existe
                                 echo "<td>" . ($row['fecha_respuesta'] ? $row['fecha_respuesta'] : 'Pendiente') . "</td>"; // Muestra la fecha de respuesta o 'Pendiente'
-                                echo "<td><a href='ver_pdf.php?id_reclamo=" . $row['id_reclamacion'] . "' class='btn btn-info btn-sm'>Ver PDF</a></td>";
+                                echo "<td><a href='../reclamo_pdf.php?id_usuario=" . $row['id_usuario'] . "' class='btn btn-info btn-sm'>Ver PDF</a></td>";
                                 echo "<td><a href='responder.php?id_reclamo=" . $row['id_reclamacion'] . "' class='btn btn-primary btn-sm'>Responder</a></td>";
                                 echo "</tr>";
                             }

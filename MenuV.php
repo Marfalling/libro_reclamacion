@@ -1,3 +1,16 @@
+<?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+// Verifica si el usuario está autenticado
+if (!isset($_SESSION['autentificado']) || $_SESSION['autentificado'] !== TRUE) {
+    // Si no está autenticado, redirige al login
+    header('Location: login.php');
+    exit();
+}
+?>
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -60,7 +73,8 @@
                 </a>
                 <div class="collapse" id="listaReclamos">
                     <nav class="nav flex-column ml-3">
-                        <a class="nav-link" href="../vistas/panel_admin.php">Listado</a>
+                        <a class="nav-link" href="vistas/panel_admin.php">Listado</a>
+
                     </nav>
                 </div>
             </div>

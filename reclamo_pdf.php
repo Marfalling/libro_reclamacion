@@ -32,6 +32,7 @@ if (!$con) {
             reclamaciones.pedido,
             reclamaciones.menor_edad,
             reclamaciones.fecha_respuesta,
+            reclamaciones.respuesta,
             apoderado.nombre AS nombre_apoderado
         FROM 
             usuario
@@ -74,7 +75,7 @@ if ($row = mysqli_fetch_assoc($result)) {
     $menor_edad = $row['menor_edad'];
     $fecha = $row['fecha_reclamo'];
     $fecha_respuesta = $row['fecha_respuesta'];
-
+    $respuesta = $row['respuesta'];
     //apoderado
 
     $nombre_apoderado = $row['nombre_apoderado'];
@@ -98,7 +99,7 @@ class PDF extends FPDF
     }
 
     // Contenido de la tabla
-    function TablaLibroDeReclamaciones($nom, $tipo_documento, $n_documento, $ape_paterno, $ape_materno, $dir, $cel, $email, $id_reclamo, $tipo_bien, $monto,$descripcion,$tipo_reclamo, $detalle_reclamo, $pedido, $nombre_apoderado, $menor_edad, $fecha, $fecha_respuesta)
+    function TablaLibroDeReclamaciones($nom, $tipo_documento, $n_documento, $ape_paterno, $ape_materno, $dir, $cel, $email, $id_reclamo, $tipo_bien, $monto,$descripcion,$tipo_reclamo, $detalle_reclamo, $pedido, $nombre_apoderado, $menor_edad, $fecha, $fecha_respuesta, $respuesta)
     {
         if (strtotime($fecha)) { // Verifica si la fecha es válida
             list($ano, $mes, $dia) = explode('-', $fecha);
@@ -211,7 +212,7 @@ class PDF extends FPDF
         $this->Ln(); // Salto de línea después de la fila de fecha
 
         // Fila para la firma del proveedor y cuadro vacío
-        $this->Cell(125, 20, '', 1, 0, 'C'); // Cuadro vacío a la izquierda
+        $this->Cell(125, 20,  mb_convert_encoding($respuesta, 'ISO-8859-1', 'UTF-8'), 1, 0, 'C'); // Cuadro vacío a la izquierda
         $this->Cell(0, 20, '', 1, 1, 'C'); // Celda de FIRMA 
 
         $this->Cell(100,12, 'Reclamo: Disconformidad relacionada a los productos o servicios.', 1, 0, 'L');        
@@ -244,7 +245,7 @@ class PDF extends FPDF
 $pdf = new PDF();
 $pdf->AliasNbPages();
 $pdf->AddPage();
-$pdf->TablaLibroDeReclamaciones($nom, $tipo_documento, $n_documento, $ape_paterno, $ape_materno, $dir, $cel, $email, $id_reclamo, $tipo_bien, $monto,$descripcion,$tipo_reclamo, $detalle_reclamo, $pedido, $nombre_apoderado, $menor_edad, $fecha, $fecha_respuesta);
+$pdf->TablaLibroDeReclamaciones($nom, $tipo_documento, $n_documento, $ape_paterno, $ape_materno, $dir, $cel, $email, $id_reclamo, $tipo_bien, $monto,$descripcion,$tipo_reclamo, $detalle_reclamo, $pedido, $nombre_apoderado, $menor_edad, $fecha, $fecha_respuesta, $respuesta);
 $pdf->Output();
 // Cerrar la conexión
 mysqli_close($con);
