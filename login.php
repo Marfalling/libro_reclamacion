@@ -4,50 +4,99 @@
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <meta name="description" content="" />
-    <meta name="author" content="" />
-    <title>Login</title>
+    <title>Iniciar Sesión</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet" />
-    <link href="css/estilos.css" rel="stylesheet" />
-    <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="css/estilos.css">
+
+    <style>
+        body {
+            background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .login-container {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 15px 50px rgba(0,0,0,0.1);
+            overflow: hidden;
+            max-width: 400px;
+            width: 100%;
+        }
+        .login-header {
+            background: linear-gradient(to right, #4a5568, #2d3748);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        .login-body {
+            padding: 30px;
+        }
+        .form-control {
+            border-radius: 25px;
+            padding: 10px 15px;
+        }
+        .btn-login {
+            border-radius: 25px;
+            padding: 10px 20px;
+            background: linear-gradient(to right, #4a5568, #2d3748);
+            border: none;
+            transition: all 0.3s ease;
+        }
+        .btn-login:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 14px rgba(50,50,93,.1), 0 3px 6px rgba(0,0,0,.08);
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            margin-bottom: 10px;
+            color: #6c757d;
+        }
+        .input-group-text {
+            background: transparent;
+            border: none;
+            color: #6c757d;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 </head>
-<body class="bg-primary">
-    <div id="layoutAuthentication">
-        <div id="layoutAuthentication_content">
-            <main>
-                <div class="container">
-                    <div class="row justify-content-center">
-                        <div class="col-lg-5">
-                            <div class="card shadow-lg border-0 rounded-lg mt-5">
-                                <div class="card-header"><h3 class="text-center font-weight-light my-4">Login</h3></div>
-                                <div class="card-body">
-                                    <form action="controlador/autentificacion.php" method="post">
-                                        <!-- Usuario Input -->
-                                        <div class="form-group mb-3">
-                                            <label for="user_admin">Usuario</label>
-                                            <input class="form-control" name="user_admin" type="text" id="user_admin" placeholder="Usuario" required />
-                                        </div>
-                                        <!-- Password Input -->
-                                        <div class="form-group mb-3">
-                                            <label for="password">Contraseña</label>
-                                            <input class="form-control" name="password" type="password" id="password" placeholder="Contraseña" required />
-                                        </div>
-                                        <!-- Botón de inicio de sesión -->
-                                        <div class="d-flex align-items-center justify-content-between mt-4 mb-0">
-                                            <button type="submit" class="btn btn-primary">Iniciar sesión</button>
-                                        </div>
-                                    </form>
-                                </div>
-                                <div class="card-footer text-center py-3">
-                                    <div class="small"><a href="register.html">¿No tienes cuenta? Regístrate aquí</a></div>
-                                </div>
-                            </div>
-                        </div>
+<body>
+    <div class="login-container">
+        <div class="login-header">
+            <h3 class="mb-0">Sistema de Administración</h3>
+        </div>
+        <div class="login-body">
+            <form action="controlador/autentificacion.php" method="post">
+                <div class="form-group">
+                    <label for="user_admin">
+                        <i class="fas fa-user mr-2"></i>Usuario
+                    </label>
+                    <div class="input-group">
+                        <input class="form-control" name="user_admin" type="text" id="user_admin" 
+                               placeholder="Ingrese su usuario" required />
                     </div>
                 </div>
-            </main>
+                <div class="form-group">
+                    <label for="password">
+                        <i class="fas fa-lock mr-2"></i>Contraseña
+                    </label>
+                    <div class="input-group">
+                        <input class="form-control" name="password" type="password" id="password" 
+                               placeholder="Ingrese su contraseña" required />
+                    </div>
+                </div>
+                <div class="form-group text-center">
+                    <button type="submit" class="btn btn-login text-white w-100">
+                        Iniciar Sesión
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
+
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
