@@ -5,6 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <title>Iniciar Sesión</title>
+    <link rel="icon" type="image/png" href="icon\Rysoft.png">
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="css/estilos.css">
 
@@ -29,6 +30,10 @@
             color: white;
             padding: 20px;
             text-align: center;
+        }
+        .login-logo {
+            max-width: 200px;
+            margin-bottom: 15px;
         }
         .login-body {
             padding: 30px;
@@ -66,6 +71,7 @@
 <body>
     <div class="login-container">
         <div class="login-header">
+            <img src="icon\Rysoft.png" alt="Rysoft Logo" class="login-logo">
             <h3 class="mb-0">Sistema de Administración</h3>
         </div>
         <div class="login-body">

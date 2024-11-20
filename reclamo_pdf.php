@@ -231,7 +231,7 @@ class PDF extends FPDF
         // Establecer la posición en Y a la altura total de la página menos el margen inferior
         $this->SetY(-($this->bMargin + 10)); // 15 es la distancia desde el borde inferior que deseas para la imagen
         
-        $this->Image('icon/indecopi.jpg', 100, $this->GetY(), 100); // Cambié el valor de X a 100 mm y tamaño de la imagen a 50 mm
+        $this->Image('icon/Rysoft.png', 90, $this->GetY(), 30); // Cambié el valor de X a 100 mm y tamaño de la imagen a 50 mm
         
         
     }
