@@ -3,9 +3,7 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// Verifica si el usuario está autenticado
 if (!isset($_SESSION['autentificado']) || $_SESSION['autentificado'] !== TRUE) {
-    // Si no está autenticado, redirige al login
     header('Location: login.php');
     exit();
 }
@@ -20,7 +18,6 @@ if (!$id_reclamo) {
 }
 
 try {
-    // Preparar consulta con prepared statement
     $stmt = $con->prepare("
         SELECT 
             id_reclamacion, 
@@ -53,9 +50,9 @@ try {
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Responder Reclamo #<?= $reclamo['id_reclamacion'] ?></title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css">
     <style>
         .card-header {
             background-color: #f8f9fa;
@@ -95,9 +92,23 @@ try {
                                 <p><?= htmlspecialchars($reclamo['tipo_reclamo']) ?></p>
                                 
                                 <p class="detail-label">Estado Actual:</p>
-                                <p class="badge bg-<?= $reclamo['estado'] == 'Pendiente' ? 'warning' : 'success' ?>">
-                                    <?= htmlspecialchars($reclamo['estado']) ?>
-                                </p>
+                                <?php 
+                                    // Normaliza el estado para evitar problemas de formato
+                                    $estado = strtolower(trim($reclamo['estado']));
+                                    
+                                    // Asigna clases según el estado
+                                    switch ($estado) {
+                                        case 'pendiente':
+                                            $badgeClass = 'badge badge-warning';  // Amarillo
+                                            break;
+                                        case 'respondido':
+                                            $badgeClass = 'badge badge-success';  // Verde
+                                            break;
+                                    }
+                                ?>
+                                <span class="badge badge-pill <?= $badgeClass ?>">
+                                    <?= ucfirst($estado) ?>
+                                </span>
                             </div>
                         </div>
 
@@ -117,7 +128,7 @@ try {
 
                         <form action="../controlador/enviar_respuesta.php" method="post">
                             <div class="form-group mb-3">
-                                <label for="respuesta" class="form-label">Nueva Respuesta:</label>
+                                <label for="respuesta">Nueva Respuesta:</label>
                                 <textarea 
                                     class="form-control" 
                                     name="respuesta" 
@@ -132,7 +143,7 @@ try {
                             
                             <div class="text-center">
                                 <button type="submit" class="btn btn-primary btn-lg">
-                                    <i class="bi bi-send"></i> Enviar Respuesta
+                                    Enviar Respuesta
                                 </button>
                             </div>
                         </form>
@@ -142,6 +153,7 @@ try {
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
