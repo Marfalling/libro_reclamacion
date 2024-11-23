@@ -10,8 +10,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     // Verifica que ambos campos tengan valores
     if ($id_reclamo && $respuesta) {
-        // Prepara la consulta para actualizar la respuesta en la base de datos
-        $sql = "UPDATE reclamaciones SET respuesta = '$respuesta', estado = 'Respondido' WHERE id_reclamacion = $id_reclamo";
+        // Prepara la consulta para actualizar la respuesta en la base de datos, incluyendo la fecha de respuesta
+        $sql = "UPDATE reclamaciones SET respuesta = '$respuesta', estado = 'Respondido', fecha_respuesta = NOW() WHERE id_reclamacion = $id_reclamo";
 
         // Ejecuta la consulta
         $result = mysqli_query($con, $sql);

@@ -26,7 +26,7 @@ try {
             monto_reclamado, 
             descripcion, 
             tipo_reclamo, 
-            fecha_reclamo, 
+            fecha_reclamo,
             estado, 
             respuesta 
         FROM reclamaciones 
@@ -71,8 +71,15 @@ try {
         <div class="row">
             <div class="col-lg-8 offset-lg-2">
                 <div class="card shadow-lg">
-                    <div class="card-header text-center">
-                        <h3 class="mb-0">Responder Reclamo #<?= $reclamo['id_reclamacion'] ?></h3>
+                    <div class="card-header">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <button onclick="window.history.back()" class="btn btn-secondary">
+                                <i class="fas fa-arrow-left"></i> Volver
+                            </button>
+                            <h3 class="mb-0">Responder Reclamo #<?= $reclamo['id_reclamacion'] ?></h3>
+                            
+                            <div style="width: 85px"></div>
+                        </div>
                     </div>
                     <div class="card-body">
                         <div class="row mb-4">

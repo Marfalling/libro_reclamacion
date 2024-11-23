@@ -62,29 +62,46 @@ $totalPaginas = ceil($totalRegistros / $limite);
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
 </head>
 <body>
-    <?php require("../MenuV.php"); // Sidebar fijo ?>
+    <?php 
+    require("../MenuV.php"); // Sidebar fijo 
+    ?>
 
     <div class="container mt-4">
         <!-- Filtros -->
         <div class="card shadow-sm mb-3">
             <div class="card-body">
-                <form method="GET" action="../controlador/reclamo_listar.php">
+                <form method="GET" action="../controlador/reclamo_listar.php" id="filterForm">
                     <div class="row align-items-end">
                         <div class="col-md-4">
                             <label>Fecha Desde:</label>
-                            <input type="date" name="fecha_desde" value="<?= htmlspecialchars($fechaDesde) ?>" class="form-control">
+                            <input type="date" name="fecha_desde" id="fecha_desde" value="<?= htmlspecialchars($fechaDesde) ?>" class="form-control">
                         </div>
                         <div class="col-md-4">
                             <label>Fecha Hasta:</label>
-                            <input type="date" name="fecha_hasta" value="<?= htmlspecialchars($fechaHasta) ?>" class="form-control">
+                            <input type="date" name="fecha_hasta" id="fecha_hasta" value="<?= htmlspecialchars($fechaHasta) ?>" class="form-control">
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-2">
+                            <button type="button" class="btn btn-secondary btn-block" onclick="limpiarFiltros()">Limpiar</button>
+                        </div>
+                        <div class="col-md-2">
                             <button type="submit" class="btn btn-primary btn-block">Filtrar</button>
                         </div>
                     </div>
                 </form>
             </div>
         </div>
+
+        <!-- Agregar este script justo antes del cierre del body -->
+        <script>
+        function limpiarFiltros() {
+            // Limpiar los campos de fecha
+            document.getElementById('fecha_desde').value = '';
+            document.getElementById('fecha_hasta').value = '';
+            
+            // Enviar el formulario para recargar sin filtros
+            document.getElementById('filterForm').submit();
+        }
+        </script>
 
         <!-- Tabla de reclamos -->
         <div class="card shadow-lg text-center mb-4">
@@ -134,7 +151,7 @@ $totalPaginas = ceil($totalRegistros / $limite);
                         echo "<td>" . ($row['respuesta'] ? htmlspecialchars($row['respuesta']) : 'Sin respuesta') . "</td>";
                         echo "<td>" . ($row['fecha_respuesta'] ? htmlspecialchars($row['fecha_respuesta']) : 'Pendiente') . "</td>";
                         echo "<td><a href='../reclamo_pdf.php?id_usuario=" . htmlspecialchars($row['id_usuario']) . "' class='btn btn-info btn-sm' target='_blank'>Ver PDF</a></td>";
-                        echo "<td><a href='responder.php?id_reclamo=" . htmlspecialchars($row['id_reclamacion']) . "' class='btn btn-primary btn-sm'>Responder</a></td>";
+                        echo "<td><a href='../vistas/responder.php?id_reclamo=" . htmlspecialchars($row['id_reclamacion']) . "' class='btn btn-primary btn-sm'>Responder</a></td>";
                         echo "</tr>";
                     }
 
@@ -146,16 +163,38 @@ $totalPaginas = ceil($totalRegistros / $limite);
             </div>
         </div>
 
+        
         <!-- Paginación -->
         <nav>
             <ul class="pagination justify-content-center">
                 <?php if ($pagina > 1): ?>
                     <li class="page-item">
-                        <a class="page-link" href="?pagina=<?= $pagina - 1 ?>&fecha_desde=<?= $fechaDesde ?>&fecha_hasta=<?= $fechaHasta ?>">Anterior</a>
+                        <a class="page-link" href="?pagina=1&fecha_desde=<?= $fechaDesde ?>&fecha_hasta=<?= $fechaHasta ?>" aria-label="Primera página">
+                            <span aria-hidden="true">&laquo;&laquo;</span>
+                        </a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?pagina=<?= $pagina - 1 ?>&fecha_desde=<?= $fechaDesde ?>&fecha_hasta=<?= $fechaHasta ?>" aria-label="Anterior">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                <?php else: ?>
+                    <li class="page-item disabled">
+                        <span class="page-link">&laquo;&laquo;</span>
+                    </li>
+                    <li class="page-item disabled">
+                        <span class="page-link">&laquo;</span>
                     </li>
                 <?php endif; ?>
 
-                <?php for ($i = 1; $i <= $totalPaginas; $i++): ?>
+                <?php
+                // Mostrar un número limitado de páginas alrededor de la página actual
+                $rango = 2;
+                $inicio_rango = max(1, $pagina - $rango);
+                $fin_rango = min($totalPaginas, $pagina + $rango);
+
+                for ($i = $inicio_rango; $i <= $fin_rango; $i++): 
+                ?>
                     <li class="page-item <?= ($i === $pagina) ? 'active' : '' ?>">
                         <a class="page-link" href="?pagina=<?= $i ?>&fecha_desde=<?= $fechaDesde ?>&fecha_hasta=<?= $fechaHasta ?>"><?= $i ?></a>
                     </li>
@@ -163,7 +202,21 @@ $totalPaginas = ceil($totalRegistros / $limite);
 
                 <?php if ($pagina < $totalPaginas): ?>
                     <li class="page-item">
-                        <a class="page-link" href="?pagina=<?= $pagina + 1 ?>&fecha_desde=<?= $fechaDesde ?>&fecha_hasta=<?= $fechaHasta ?>">Siguiente</a>
+                        <a class="page-link" href="?pagina=<?= $pagina + 1 ?>&fecha_desde=<?= $fechaDesde ?>&fecha_hasta=<?= $fechaHasta ?>" aria-label="Siguiente">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?pagina=<?= $totalPaginas ?>&fecha_desde=<?= $fechaDesde ?>&fecha_hasta=<?= $fechaHasta ?>" aria-label="Última página">
+                            <span aria-hidden="true">&raquo;&raquo;</span>
+                        </a>
+                    </li>
+                <?php else: ?>
+                    <li class="page-item disabled">
+                        <span class="page-link">&raquo;</span>
+                    </li>
+                    <li class="page-item disabled">
+                        <span class="page-link">&raquo;&raquo;</span>
                     </li>
                 <?php endif; ?>
             </ul>
