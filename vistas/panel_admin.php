@@ -5,10 +5,52 @@ if (session_status() === PHP_SESSION_NONE) {
 
 // Verifica si el usuario está autenticado
 if (!isset($_SESSION['autentificado']) || $_SESSION['autentificado'] !== TRUE) {
-    // Si no está autenticado, redirige al login
     header('Location: login.php');
     exit();
 }
+
+// Conexión a la base de datos
+include('../modelo/conexion.php');
+
+// Variables de paginación
+$limite = 10; // Número de reclamos por página
+$pagina = isset($_GET['pagina']) ? (int)$_GET['pagina'] : 1;
+$inicio = ($pagina - 1) * $limite;
+
+// Variables para el filtrado
+$fechaDesde = isset($_GET['fecha_desde']) ? $_GET['fecha_desde'] : null;
+$fechaHasta = isset($_GET['fecha_hasta']) ? $_GET['fecha_hasta'] : null;
+
+// Construir la consulta base
+$sql = "SELECT SQL_CALC_FOUND_ROWS id_reclamacion, id_usuario, fecha_reclamo, hora_reclamo, estado, respuesta, fecha_respuesta 
+        FROM reclamaciones";
+
+// Condiciones del filtro por fechas
+$conditions = [];
+if ($fechaDesde) {
+    $conditions[] = "fecha_reclamo >= '$fechaDesde'";
+}
+if ($fechaHasta) {
+    $conditions[] = "fecha_reclamo <= '$fechaHasta'";
+}
+
+if (!empty($conditions)) {
+    $sql .= " WHERE " . implode(" AND ", $conditions);
+}
+
+// Agregar paginación
+$sql .= " ORDER BY fecha_reclamo DESC LIMIT $inicio, $limite";
+
+// Ejecutar la consulta
+$result = mysqli_query($con, $sql);
+
+// Obtener el total de registros
+$totalQuery = mysqli_query($con, "SELECT FOUND_ROWS() AS total");
+$totalRow = mysqli_fetch_assoc($totalQuery);
+$totalRegistros = $totalRow['total'];
+
+// Calcular el número total de páginas
+$totalPaginas = ceil($totalRegistros / $limite);
 ?>
 
 <!DOCTYPE html>
@@ -19,25 +61,22 @@ if (!isset($_SESSION['autentificado']) || $_SESSION['autentificado'] !== TRUE) {
     <title>Listado de Reclamos</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
 </head>
-
 <body>
-
-    <?php
-        require("../MenuV.php"); // Sidebar fijo
-    ?>
+    <?php require("../MenuV.php"); // Sidebar fijo ?>
 
     <div class="container mt-4">
+        <!-- Filtros -->
         <div class="card shadow-sm mb-3">
             <div class="card-body">
-                <form method="GET" action="">
+                <form method="GET" action="../controlador/reclamo_listar.php">
                     <div class="row align-items-end">
                         <div class="col-md-4">
                             <label>Fecha Desde:</label>
-                            <input type="date" name="fecha_desde" class="form-control">
+                            <input type="date" name="fecha_desde" value="<?= htmlspecialchars($fechaDesde) ?>" class="form-control">
                         </div>
                         <div class="col-md-4">
                             <label>Fecha Hasta:</label>
-                            <input type="date" name="fecha_hasta" class="form-control">
+                            <input type="date" name="fecha_hasta" value="<?= htmlspecialchars($fechaHasta) ?>" class="form-control">
                         </div>
                         <div class="col-md-4">
                             <button type="submit" class="btn btn-primary btn-block">Filtrar</button>
@@ -47,74 +86,88 @@ if (!isset($_SESSION['autentificado']) || $_SESSION['autentificado'] !== TRUE) {
             </div>
         </div>
 
-
-    <div class="card shadow-lg text-center mb-4">
-        <div class="card-header">
-            <h4>LISTADO DE RECLAMOS</h4>
-        </div>
-        <div class="card-body">
-            <?php
-                // conexión a la base de datos
-                include('../modelo/conexion.php');
-
-                // Consulta para obtener los reclamos
-                $sql = "SELECT id_reclamacion, id_usuario, tipo_bien, monto_reclamado, descripcion, tipo_reclamo, detalle_reclamo, pedido, menor_edad, fecha_reclamo, estado, respuesta, fecha_respuesta FROM reclamaciones";
-                $result = mysqli_query($con, $sql);
-
-                // Verificar si la consulta fue exitosa
-                if ($result) {
-                    // Verificar si hay datos
-                    if (mysqli_num_rows($result) > 0) {
-                        echo "<table class='table table-bordered table-striped'>";
-                        echo "<thead class='thead-dark'>";
-                        echo "<tr>
+        <!-- Tabla de reclamos -->
+        <div class="card shadow-lg text-center mb-4">
+            <div class="card-header">
+                <h4>LISTADO DE RECLAMOS</h4>
+            </div>
+            <div class="card-body">
+                <?php
+                if ($result && mysqli_num_rows($result) > 0) {
+                    echo "<table class='table table-bordered table-striped'>";
+                    echo "<thead class='thead-dark'>
+                            <tr>
                                 <th>ID Reclamo</th>
                                 <th>ID Usuario</th>
                                 <th>Fecha Reclamo</th>
+                                <th>Hora Reclamo</th>
                                 <th>Estado</th>
                                 <th>Respuesta</th>
                                 <th>Fecha Respuesta</th>
                                 <th>Ver PDF</th>
                                 <th>Responder</th>
-                              </tr>";
-                        echo "</thead><tbody>";
-                        
-                        // Mostrar los datos
-                        while ($row = mysqli_fetch_assoc($result)) {
-                            // Determina la clase del badge según el estado
-                            $estado = strtolower(trim($row['estado'])); // Normaliza el estado
-                            switch ($estado) {
-                                case 'pendiente':
-                                    $badgeClass = 'badge-warning'; // Amarillo
-                                    break;
-                                case 'respondido':
-                                    $badgeClass = 'badge-success'; // Azul claro
-                                    break;
-                            }
-                            
-                            echo "<tr>";
-                            echo "<td>" . $row['id_reclamacion'] . "</td>";
-                            echo "<td>" . $row['id_usuario'] . "</td>";
-                            echo "<td>" . $row['fecha_reclamo'] . "</td>";
-                            // Muestra el estado como un badge
-                            echo "<td><span class='badge $badgeClass'>" . ucfirst($estado) . "</span></td>";
-                            echo "<td>" . ($row['respuesta'] ? $row['respuesta'] : 'Sin respuesta') . "</td>"; // Muestra respuesta si existe
-                            echo "<td>" . ($row['fecha_respuesta'] ? $row['fecha_respuesta'] : 'Pendiente') . "</td>"; // Muestra la fecha de respuesta o 'Pendiente'
-                            echo "<td><a href='../reclamo_pdf.php?id_usuario=" . $row['id_usuario'] . "' class='btn btn-info btn-sm' target='_blank'>Ver PDF</a></td>";
-                            echo "<td><a href='responder.php?id_reclamo=" . $row['id_reclamacion'] . "' class='btn btn-primary btn-sm'>Responder</a></td>";
-                            echo "</tr>";
+                            </tr>
+                          </thead>
+                          <tbody>";
+
+                    while ($row = mysqli_fetch_assoc($result)) {
+                        // Normalizar el estado
+                        $estado = strtolower(trim($row['estado']));
+                        switch ($estado) {
+                            case 'pendiente':
+                                $badgeClass = 'badge-warning';
+                                break;
+                            case 'respondido':
+                                $badgeClass = 'badge-success';
+                                break;
+                            default:
+                                $badgeClass = 'badge-secondary';
+                                break;
                         }
-                        
-                        echo "</tbody></table>";
-                    } else {
-                        echo "<div class='alert alert-warning' role='alert'>No se encontraron reclamos.</div>";
+
+                        echo "<tr>";
+                        echo "<td>" . htmlspecialchars($row['id_reclamacion']) . "</td>";
+                        echo "<td>" . htmlspecialchars($row['id_usuario']) . "</td>";
+                        echo "<td>" . htmlspecialchars($row['fecha_reclamo']) . "</td>";
+                        echo "<td>" . htmlspecialchars($row['hora_reclamo']) . "</td>";
+                        echo "<td><span class='badge $badgeClass'>" . ucfirst($estado) . "</span></td>";
+                        echo "<td>" . ($row['respuesta'] ? htmlspecialchars($row['respuesta']) : 'Sin respuesta') . "</td>";
+                        echo "<td>" . ($row['fecha_respuesta'] ? htmlspecialchars($row['fecha_respuesta']) : 'Pendiente') . "</td>";
+                        echo "<td><a href='../reclamo_pdf.php?id_usuario=" . htmlspecialchars($row['id_usuario']) . "' class='btn btn-info btn-sm' target='_blank'>Ver PDF</a></td>";
+                        echo "<td><a href='responder.php?id_reclamo=" . htmlspecialchars($row['id_reclamacion']) . "' class='btn btn-primary btn-sm'>Responder</a></td>";
+                        echo "</tr>";
                     }
+
+                    echo "</tbody></table>";
                 } else {
-                    echo "<div class='alert alert-danger' role='alert'>Error al ejecutar la consulta: " . mysqli_error($con) . "</div>";
+                    echo "<div class='alert alert-warning' role='alert'>No se encontraron reclamos.</div>";
                 }
-            ?>
+                ?>
+            </div>
         </div>
+
+        <!-- Paginación -->
+        <nav>
+            <ul class="pagination justify-content-center">
+                <?php if ($pagina > 1): ?>
+                    <li class="page-item">
+                        <a class="page-link" href="?pagina=<?= $pagina - 1 ?>&fecha_desde=<?= $fechaDesde ?>&fecha_hasta=<?= $fechaHasta ?>">Anterior</a>
+                    </li>
+                <?php endif; ?>
+
+                <?php for ($i = 1; $i <= $totalPaginas; $i++): ?>
+                    <li class="page-item <?= ($i === $pagina) ? 'active' : '' ?>">
+                        <a class="page-link" href="?pagina=<?= $i ?>&fecha_desde=<?= $fechaDesde ?>&fecha_hasta=<?= $fechaHasta ?>"><?= $i ?></a>
+                    </li>
+                <?php endfor; ?>
+
+                <?php if ($pagina < $totalPaginas): ?>
+                    <li class="page-item">
+                        <a class="page-link" href="?pagina=<?= $pagina + 1 ?>&fecha_desde=<?= $fechaDesde ?>&fecha_hasta=<?= $fechaHasta ?>">Siguiente</a>
+                    </li>
+                <?php endif; ?>
+            </ul>
+        </nav>
     </div>
-</div>
 </body>
 </html>

@@ -30,6 +30,8 @@
                 if (isset($_REQUEST['registrar'])) {
 
                     $fecha_reclamo = date('Y-m-d'); // Solo día, mes y año
+                    $hora_reclamo = date('H:i:s'); // Captura la hora actual en formato HH:MM
+
 
                     // Calcular la fecha de respuesta
                     $fecha_respuesta = calcularFechaRespuesta($fecha_reclamo);
@@ -47,7 +49,7 @@
                     $menor_edad = isset($_REQUEST['menor_edad']) ? 'Sí' : 'No';
 
                     // Registrar el reclamo
-                    $id_reclamacion = RegistrarReclamo($id_usuario, $tipo_bien, $monto_reclamado, $descripcion, $tipo_reclamo, $detalle_reclamo, $pedido, $menor_edad, $fecha_reclamo, $fecha_respuesta);
+                    $id_reclamacion = RegistrarReclamo($id_usuario, $tipo_bien, $monto_reclamado, $descripcion, $tipo_reclamo, $detalle_reclamo, $pedido, $menor_edad, $fecha_reclamo,$hora_reclamo, $fecha_respuesta);
 
                     if ($id_reclamacion) {
                         echo "Reclamo registrado exitosamente.";
