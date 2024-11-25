@@ -99,9 +99,17 @@ if (!isset($_SESSION['autentificado']) || $_SESSION['autentificado'] !== TRUE) {
                 </a>
                 <div class="collapse" id="listaReclamos">
                     <nav class="nav flex-column ml-3">
-                        <a class="nav-link" href="vistas/panel_admin.php">Listado</a>
+                        <a class="nav-link" href="vistas/panel_admin.php" id="listado-link">Listado</a>
                     </nav>
                 </div>
+                <script>
+                    document.addEventListener('DOMContentLoaded', function() {
+                        document.getElementById('listado-link').addEventListener('click', function(event) {
+                            event.preventDefault(); // Evita que el enlace navegue
+                            location.reload(); // Recarga la página actual
+                        });
+                    });
+                </script>
             </div>
 
             <!-- Botón de Cierre de Sesión -->
