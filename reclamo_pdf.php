@@ -195,18 +195,22 @@ class PDF extends FPDF
         // Segunda fila: Fecha
         $this->Cell(80, 10, 'FECHA DE COMUNICACION DE LA RESPUESTA:', 1, 0, 'C'); // Etiqueta de Fecha
 
-        $fecha= new DateTime(); // Fecha actual
-        $fecha->modify('+15 days');
-        $fecha_respuesta = $fecha->format('Y-m-d'); // Formato de la fecha de respuesta
+        if (strtotime($fecha_respuesta)) { // Verifica si la fecha de respuesta es válida
+            $fecha_resp = new DateTime($fecha_respuesta);
+            $day_resp = $fecha_resp->format('d'); // Día de la fecha de respuesta
+            $month_resp = $fecha_resp->format('m'); // Mes de la fecha de respuesta
+            $year_resp = $fecha_resp->format('Y'); // Año de la fecha de respuesta
 
-        // Variables para día, mes y año 
-        $day = $fecha->format('d'); // Día de la fecha de respuesta
-        $month = $fecha->format('m'); // Mes de la fecha de respuesta
-        $anio = $fecha->format('Y'); // Año de la fecha de respuesta
+            $this->Cell(15, 10, mb_convert_encoding($day_resp, 'ISO-8859-1', 'UTF-8'), 1, 0, 'C'); // Celda para el día
+            $this->Cell(15, 10, mb_convert_encoding($month_resp, 'ISO-8859-1', 'UTF-8'), 1, 0, 'C'); // Celda para el mes
+            $this->Cell(15, 10, mb_convert_encoding($year_resp, 'ISO-8859-1', 'UTF-8'), 1, 0, 'C'); // Celda para el año
+        } else {
+            // Manejo de error o valor por defecto
+            $this->Cell(15, 10, 'N/A', 1, 0, 'C'); // Valor por defecto si la fecha no es válida
+            $this->Cell(15, 10, 'N/A', 1, 0, 'C');
+            $this->Cell(15, 10, 'N/A', 1, 0, 'C');
+        }
 
-        $this->Cell(15, 10, mb_convert_encoding($day, 'ISO-8859-1', 'UTF-8'), 1, 0, 'C'); // Celda para el día
-        $this->Cell(15, 10, mb_convert_encoding($month, 'ISO-8859-1', 'UTF-8'), 1, 0, 'C'); //Celda para el mes
-        $this->Cell(15, 10, mb_convert_encoding($anio, 'ISO-8859-1', 'UTF-8'), 1, 0, 'C'); //Celda para el año
         $this->Cell(0, 10, mb_convert_encoding('FIRMA DEL PROVEEDOR', 'ISO-8859-1', 'UTF-8'), 1, 0, 'C');
 
         $this->Ln(); // Salto de línea después de la fila de fecha

@@ -28,7 +28,8 @@ try {
             tipo_reclamo, 
             fecha_reclamo,
             estado, 
-            respuesta 
+            respuesta, 
+            fecha_respuesta
         FROM reclamaciones 
         WHERE id_reclamacion = ?
     ");

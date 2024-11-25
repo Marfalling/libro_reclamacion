@@ -39,7 +39,7 @@ if (!empty($conditions)) {
 }
 
 // Agregar paginación
-$sql .= " ORDER BY fecha_reclamo DESC LIMIT $inicio, $limite";
+$sql .= " ORDER BY  id_reclamacion DESC LIMIT $inicio, $limite";
 
 // Ejecutar la consulta
 $result = mysqli_query($con, $sql);
@@ -90,8 +90,7 @@ $totalPaginas = ceil($totalRegistros / $limite);
                 </form>
             </div>
         </div>
-
-        <!-- Agregar este script justo antes del cierre del body -->
+        
         <script>
         function limpiarFiltros() {
             // Limpiar los campos de fecha

@@ -11,16 +11,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Verifica que ambos campos tengan valores
     if ($id_reclamo && $respuesta) {
         // Prepara la consulta para actualizar la respuesta en la base de datos, incluyendo la fecha de respuesta
-        $sql = "UPDATE reclamaciones SET respuesta = '$respuesta', estado = 'Respondido', fecha_respuesta = NOW() WHERE id_reclamacion = $id_reclamo";
+        $sql = "UPDATE reclamaciones 
+        SET respuesta = ?, estado = 'Respondido', fecha_respuesta = NOW() 
+        WHERE id_reclamacion = ?";
+        $stmt = $con->prepare($sql);
+        $stmt->bind_param("si", $respuesta, $id_reclamo);
+        $result = $stmt->execute();
 
-        // Ejecuta la consulta
-        $result = mysqli_query($con, $sql);
-
-        // Verifica si la actualización fue exitosa
         if ($result) {
             // Redirige a panel_admin.php después de guardar la respuesta
             echo "<script type='text/javascript'>window.location.href = '../vistas/panel_admin.php';</script>";
-            exit(); // Asegúrate de detener el script después de la redirección
+            exit();
         } else {
             // Error en la consulta
             echo "Error al actualizar la respuesta: " . mysqli_error($con);
