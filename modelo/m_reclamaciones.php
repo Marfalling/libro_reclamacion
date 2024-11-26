@@ -40,49 +40,45 @@ function RegistrarReclamo($id_usuario, $tipo_bien, $monto_reclamado, $descripcio
 
 }
 
-function ObtenerReclamosFiltrados($fechaDesde, $fechaHasta, $pagina = 1, $limite = 10) {
-    include('../modelo/conexion.php');
-    
-    // Variables de paginación
+function ObtenerReclamos($fechaDesde, $fechaHasta, $pagina = 1, $limite = 10) {
+    include('conexion.php'); 
+
     $inicio = ($pagina - 1) * $limite;
-
-    // Consulta base
-    $sql = "SELECT SQL_CALC_FOUND_ROWS id_reclamacion, id_usuario, fecha_reclamo, estado, respuesta, fecha_respuesta 
-            FROM reclamaciones";
-
-    // Condiciones de filtro
+    $sql = "SELECT SQL_CALC_FOUND_ROWS id_reclamacion, id_usuario, fecha_reclamo, hora_reclamo, estado, respuesta, fecha_respuesta FROM reclamaciones";
     $conditions = [];
+    $params = [];
+
     if ($fechaDesde) {
-        $conditions[] = "fecha_reclamo >= '$fechaDesde'";
+        $conditions[] = "fecha_reclamo >= ?";
+        $params[] = $fechaDesde;
     }
+
     if ($fechaHasta) {
-        $conditions[] = "fecha_reclamo <= '$fechaHasta'";
+        $conditions[] = "fecha_reclamo <= ?";
+        $params[] = $fechaHasta;
     }
 
     if (!empty($conditions)) {
         $sql .= " WHERE " . implode(" AND ", $conditions);
     }
 
-    // Paginación
-    $sql .= " ORDER BY fecha_reclamo DESC LIMIT $inicio, $limite";
+    $sql .= " ORDER BY id_reclamacion DESC LIMIT ?, ?";
+    $params[] = $inicio;
+    $params[] = $limite;
 
-    // Ejecutar la consulta
-    $result = mysqli_query($con, $sql);
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_bind_param($stmt, str_repeat('s', count($params) - 2) . 'ii', ...$params);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
 
     // Obtener el total de registros
     $totalQuery = mysqli_query($con, "SELECT FOUND_ROWS() AS total");
     $totalRow = mysqli_fetch_assoc($totalQuery);
     $totalRegistros = $totalRow['total'];
 
-    // Calcular el número total de páginas
-    $totalPaginas = ceil($totalRegistros / $limite);
-
     return [
         'result' => $result,
-        'totalPaginas' => $totalPaginas,
-        'pagina' => $pagina,
-        'fechaDesde' => $fechaDesde,
-        'fechaHasta' => $fechaHasta
+        'totalRegistros' => $totalRegistros
     ];
 }
 

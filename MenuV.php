@@ -105,7 +105,7 @@ if (!isset($_SESSION['autentificado']) || $_SESSION['autentificado'] !== TRUE) {
                 <script>
                     document.addEventListener('DOMContentLoaded', function() {
                         document.getElementById('listado-link').addEventListener('click', function(event) {
-                            event.preventDefault(); // Evita que el enlace navegue
+                            //event.preventDefault(); // Evita que el enlace navegue
                             location.reload(); // Recarga la página actual
                         });
                     });

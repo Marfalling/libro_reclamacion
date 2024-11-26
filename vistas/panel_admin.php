@@ -1,17 +1,6 @@
 <?php
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
 
-// Verifica si el usuario está autenticado
-if (!isset($_SESSION['autentificado']) || $_SESSION['autentificado'] !== TRUE) {
-    header('Location: login.php');
-    exit();
-}
-
-// Conexión a la base de datos
 include('../modelo/conexion.php');
-
 // Variables de paginación
 $limite = 10; // Número de reclamos por página
 $pagina = isset($_GET['pagina']) ? (int)$_GET['pagina'] : 1;
@@ -22,24 +11,26 @@ $fechaDesde = isset($_GET['fecha_desde']) ? $_GET['fecha_desde'] : null;
 $fechaHasta = isset($_GET['fecha_hasta']) ? $_GET['fecha_hasta'] : null;
 
 // Construir la consulta base
-$sql = "SELECT SQL_CALC_FOUND_ROWS id_reclamacion, id_usuario, fecha_reclamo, hora_reclamo, estado, respuesta, fecha_respuesta 
-        FROM reclamaciones";
+$sql = "SELECT SQL_CALC_FOUND_ROWS id_reclamacion, id_usuario, fecha_reclamo, hora_reclamo, estado, respuesta, fecha_respuesta
+FROM reclamaciones";
 
 // Condiciones del filtro por fechas
 $conditions = [];
+
 if ($fechaDesde) {
-    $conditions[] = "fecha_reclamo >= '$fechaDesde'";
+$conditions[] = "fecha_reclamo >= '$fechaDesde'";
 }
+
 if ($fechaHasta) {
-    $conditions[] = "fecha_reclamo <= '$fechaHasta'";
+$conditions[] = "fecha_reclamo <= '$fechaHasta'";
 }
 
 if (!empty($conditions)) {
-    $sql .= " WHERE " . implode(" AND ", $conditions);
+$sql .= " WHERE " . implode(" AND ", $conditions);
 }
 
 // Agregar paginación
-$sql .= " ORDER BY  id_reclamacion DESC LIMIT $inicio, $limite";
+$sql .= " ORDER BY id_reclamacion DESC LIMIT $inicio, $limite";
 
 // Ejecutar la consulta
 $result = mysqli_query($con, $sql);
@@ -51,6 +42,7 @@ $totalRegistros = $totalRow['total'];
 
 // Calcular el número total de páginas
 $totalPaginas = ceil($totalRegistros / $limite);
+
 ?>
 
 <!DOCTYPE html>
@@ -109,7 +101,7 @@ $totalPaginas = ceil($totalRegistros / $limite);
             </div>
             <div class="card-body">
                 <?php
-                if ($result && mysqli_num_rows($result) > 0) {
+                if (isset($result) && $result && mysqli_num_rows($result) > 0) {
                     echo "<table class='table table-bordered table-striped'>";
                     echo "<thead class='thead-dark'>
                             <tr>
@@ -163,63 +155,65 @@ $totalPaginas = ceil($totalRegistros / $limite);
         </div>
 
         
-        <!-- Paginación -->
-        <nav>
-            <ul class="pagination justify-content-center">
-                <?php if ($pagina > 1): ?>
-                    <li class="page-item">
-                        <a class="page-link" href="?pagina=1&fecha_desde=<?= $fechaDesde ?>&fecha_hasta=<?= $fechaHasta ?>" aria-label="Primera página">
-                            <span aria-hidden="true">&laquo;&laquo;</span>
-                        </a>
-                    </li>
-                    <li class="page-item">
-                        <a class="page-link" href="?pagina=<?= $pagina - 1 ?>&fecha_desde=<?= $fechaDesde ?>&fecha_hasta=<?= $fechaHasta ?>" aria-label="Anterior">
-                            <span aria-hidden="true">&laquo;</span>
-                        </a>
-                    </li>
-                <?php else: ?>
-                    <li class="page-item disabled">
-                        <span class="page-link">&laquo;&laquo;</span>
-                    </li>
-                    <li class="page-item disabled">
-                        <span class="page-link">&laquo;</span>
-                    </li>
-                <?php endif; ?>
+<!-- Paginación -->
+<nav>
+    <ul class="pagination justify-content-center">
+        <?php if (isset($pagina) && $pagina > 1): ?>
+            <li class="page-item">
+                <a class="page-link" href="?pagina=1&fecha_desde=<?= htmlspecialchars($fechaDesde) ?>&fecha_hasta=<?= htmlspecialchars($fechaHasta) ?>" aria-label="Primera página">
+                    <span aria-hidden="true">&laquo;&laquo;</span>
+                </a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="?pagina=<?= $pagina - 1 ?>&fecha_desde=<?= htmlspecialchars($fechaDesde) ?>&fecha_hasta=<?= htmlspecialchars($fechaHasta) ?>" aria-label="Anterior">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+        <?php else: ?>
+            <li class="page-item disabled">
+                <span class="page-link">&laquo;&laquo;</span>
+            </li>
+            <li class="page-item disabled">
+                <span class="page-link">&laquo;</span>
+            </li>
+        <?php endif; ?>
 
-                <?php
-                // Mostrar un número limitado de páginas alrededor de la página actual
-                $rango = 2;
-                $inicio_rango = max(1, $pagina - $rango);
-                $fin_rango = min($totalPaginas, $pagina + $rango);
+        <?php
+        // Mostrar un número limitado de páginas alrededor de la página actual
+        if (isset($totalPaginas) && $totalPaginas > 0) {
+            $rango = 2;
+            $inicio_rango = max(1, $pagina - $rango);
+            $fin_rango = min($totalPaginas, $pagina + $rango);
 
-                for ($i = $inicio_rango; $i <= $fin_rango; $i++): 
-                ?>
-                    <li class="page-item <?= ($i === $pagina) ? 'active' : '' ?>">
-                        <a class="page-link" href="?pagina=<?= $i ?>&fecha_desde=<?= $fechaDesde ?>&fecha_hasta=<?= $fechaHasta ?>"><?= $i ?></a>
-                    </li>
-                <?php endfor; ?>
+            for ($i = $inicio_rango; $i <= $fin_rango; $i++): 
+            ?>
+                <li class="page-item <?= (isset($pagina) && $i === $pagina) ? 'active' : '' ?>">
+                    <a class="page-link" href="?pagina=<?= $i ?>&fecha_desde=<?= htmlspecialchars($fechaDesde) ?>&fecha_hasta=<?= htmlspecialchars($fechaHasta) ?>"><?= $i ?></a>
+                </li>
+            <?php endfor; ?>
+        <?php } ?>
 
-                <?php if ($pagina < $totalPaginas): ?>
-                    <li class="page-item">
-                        <a class="page-link" href="?pagina=<?= $pagina + 1 ?>&fecha_desde=<?= $fechaDesde ?>&fecha_hasta=<?= $fechaHasta ?>" aria-label="Siguiente">
-                            <span aria-hidden="true">&raquo;</span>
-                        </a>
-                    </li>
-                    <li class="page-item">
-                        <a class="page-link" href="?pagina=<?= $totalPaginas ?>&fecha_desde=<?= $fechaDesde ?>&fecha_hasta=<?= $fechaHasta ?>" aria-label="Última página">
-                            <span aria-hidden="true">&raquo;&raquo;</span>
-                        </a>
-                    </li>
-                <?php else: ?>
-                    <li class="page-item disabled">
-                        <span class="page-link">&raquo;</span>
-                    </li>
-                    <li class="page-item disabled">
-                        <span class="page-link">&raquo;&raquo;</span>
-                    </li>
-                <?php endif; ?>
-            </ul>
-        </nav>
+        <?php if (isset($pagina) && $pagina < $totalPaginas): ?>
+            <li class="page-item">
+                <a class="page-link" href="?pagina=<?= $pagina + 1 ?>&fecha_desde=<?= htmlspecialchars($fechaDesde) ?>&fecha_hasta=<?= htmlspecialchars($fechaHasta) ?>" aria-label="Siguiente">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="?pagina=<?= $totalPaginas ?>&fecha_desde=<?= htmlspecialchars($fechaDesde) ?>&fecha_hasta=<?= htmlspecialchars($fechaHasta) ?>" aria-label="Última página">
+                    <span aria-hidden="true">&raquo;&raquo;</span>
+                </a>
+            </li>
+        <?php else: ?>
+            <li class="page-item disabled">
+                <span class="page-link">&raquo;</span>
+            </li>
+            <li class="page-item disabled">
+                <span class="page-link">&raquo;&raquo;</span>
+            </li>
+        <?php endif; ?>
+    </ul>
+</nav>
     </div>
 </body>
 </html>
