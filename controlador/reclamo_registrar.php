@@ -29,6 +29,12 @@
 
                 if (isset($_REQUEST['registrar'])) {
 
+
+                    date_default_timezone_set('America/Lima'); // Establece la zona horaria de Perú
+	            	//$fecha_actual = date('Y-m-d');
+		            //$fecha_hora_actual = date('Y-m-d\TH:i');
+
+
                     $fecha_reclamo = date('Y-m-d'); // Solo día, mes y año
                     $hora_reclamo = date('H:i:s'); // Captura la hora actual en formato HH:MM
 
